@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creative TMB Concepts — Portfolio</title>
+<style>
+/* Reset */
+*{margin:0;padding:0;box-sizing:border-box;scroll-behavior:smooth;}
+body{font-family:'Segoe UI',sans-serif;background:#0a0a0a;color:#fff;overflow-x:hidden;}
+
+/* Canvas Background */
+#bgCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;}
+
+/* Scroll Bar */
+#progress-bar{position:fixed;top:0;left:0;height:5px;width:0;background:linear-gradient(90deg,#D32F2F,#1976D2);z-index:9999;}
+
+/* Navbar */
+.navbar{position:fixed;top:0;left:0;width:100%;background:rgba(0,0,0,0.8);display:flex;justify-content:space-between;align-items:center;padding:15px 50px;z-index:1000;}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo img{height:55px;filter:drop-shadow(0 0 10px #D32F2F);}
+.brand-name{font-size:30px;font-weight:bold;color:#fff;text-shadow:0 0 15px #D32F2F,0 0 20px #1976D2;animation:colorShift 5s infinite alternate;}
+@keyframes colorShift{0%{text-shadow:0 0 15px #D32F2F;}100%{text-shadow:0 0 20px #1976D2;}}
+
+.nav-menu{list-style:none;display:flex;gap:20px;}
+.nav-link{color:#fff;text-decoration:none;font-weight:bold;position:relative;}
+.nav-link::after{content:"";position:absolute;left:0;bottom:-5px;width:0;height:3px;background:#1976D2;transition:.3s;}
+.nav-link:hover::after{width:100%;}
+
+.hamburger{display:none;flex-direction:column;cursor:pointer;}
+.hamburger span{height:3px;width:25px;background:#fff;margin:4px 0;border-radius:5px;}
+
+/* Section Base */
+section{padding:120px 50px;min-height:100vh;opacity:0;transform:translateY(40px);transition:1s ease;}
+section.show{opacity:1;transform:translateY(0);}
+section h2{text-align:center;margin-bottom:30px;font-size:40px;background:linear-gradient(90deg,#D32F2F,#1976D2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+
+/* CEO Slider */
+.ceo-slider {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid #D32F2F;
+  box-shadow: 0 0 25px #1976D2;
+}
+.ceo-slide {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+.ceo-slide.active {
+  opacity: 1;
+}
+.ceo-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Skills */
+.skill{margin:20px 0;}
+.skill-bar{background:#222;border-radius:25px;overflow:hidden;height:25px;}
+.skill-fill{height:100%;background:linear-gradient(135deg,#D32F2F,#1976D2);width:0;transition:width 1.5s ease;}
+
+/* Projects */
+.projects{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
+.project-card{position:relative;border-radius:15px;overflow:hidden;box-shadow:0 0 25px #1976D2;transition:.5s;cursor:pointer;}
+.project-card img{width:100%;height:200px;object-fit:cover;transition:.5s;}
+.project-card:hover img{transform:scale(1.1);}
+.project-card .overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);color:#fff;display:flex;justify-content:center;align-items:center;opacity:0;transition:.5s;}
+.project-card:hover .overlay{opacity:1;}
+
+/* Video Projects */
+.video-projects{display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:25px;}
+.video-frame{position:relative;padding-top:56.25%;overflow:hidden;border-radius:15px;box-shadow:0 0 30px #D32F2F;}
+.video-frame iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;}
+
+/* Blog & Testimonials */
+.slider-container{position:relative;display:flex;overflow-x:auto;gap:20px;scroll-behavior:smooth;padding:10px;}
+.slider-card{min-width:260px;background:#1a1a1a;border-radius:15px;box-shadow:0 0 20px #D32F2F,0 0 25px #1976D2;padding:20px;transition:.5s;}
+.slider-card:hover{transform:scale(1.05);}
+.slider-btn{position:absolute;top:50%;transform:translateY(-50%);background:linear-gradient(135deg,#D32F2F,#1976D2);color:#fff;border:none;padding:12px;border-radius:50%;cursor:pointer;z-index:10;}
+.left-btn{left:10px;}.right-btn{right:10px;}
+
+/* Contact */
+form{max-width:500px;margin:auto;display:flex;flex-direction:column;gap:15px;}
+input,textarea{padding:12px;border:1px solid #444;border-radius:8px;background:#111;color:#fff;}
+button{padding:12px;border:none;border-radius:25px;background:linear-gradient(135deg,#D32F2F,#1976D2);color:#fff;cursor:pointer;}
+button:hover{transform:scale(1.05);}
+
+/* Footer */
+footer{text-align:center;padding:25px;background:#000;}
+.social-icon img{width:32px;height:32px;margin:0 8px;transition:.3s;}
+.social-icon img:hover{transform:scale(1.2);filter:drop-shadow(0 0 8px #D32F2F) drop-shadow(0 0 12px #1976D2);}
+
+/* Responsive */
+@media(max-width:768px){
+  .nav-menu{display:none;flex-direction:column;background:#111;position:absolute;top:70px;right:20px;width:200px;padding:20px;border-radius:10px;}
+  .nav-menu.active{display:flex;}
+  .hamburger{display:flex;}
+}
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+<div id="progress-bar"></div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <a href="#about" class="nav-logo">
+    <img src="logo.png.jpg" alt="Logo">
+    <span class="brand-name">Creative TMB Concepts</span>
+  </a>
+  <ul class="nav-menu">
+    <li><a href="#about" class="nav-link">About</a></li>
+    <li><a href="#skills" class="nav-link">Skills</a></li>
+    <li><a href="#projects" class="nav-link">Projects</a></li>
+    <li><a href="#video" class="nav-link">Video</a></li>
+    <li><a href="#blog" class="nav-link">Blog</a></li>
+    <li><a href="#testimonials" class="nav-link">Testimonials</a></li>
+    <li><a href="#contact" class="nav-link">Contact</a></li>
+  </ul>
+  <div class="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<!-- About -->
+<section id="about">
+  <h2>About Creative TMB Concepts</h2>
+
+  <!-- CEO Slideshow -->
+  <div class="ceo-slider">
+    <div class="ceo-slide active"><img src="IMG_0205.png" alt="CEO Photo 1"></div>
+    <div class="ceo-slide"><img src="IMG_0206.png" alt="CEO Photo 2"></div>
+    <div class="ceo-slide"><img src="tony.jpg 1.png" alt="CEO Photo 3"></div>
+  </div>
+
+  <p id="about-text">
+    <span>Creative TMB Concepts is a cutting-edge digital and print solutions powerhouse headquartered in Lagos, Nigeria.</span>
+    <span>We engineer immersive branding ecosystems, high-fidelity printing & packaging experiences, responsive web architectures, and intelligent digital services.</span>
+    <span>Leveraging the latest design frameworks, dynamic UX/UI interfaces, cloud-enabled workflows, and next-gen automation tools, we deliver end-to-end solutions with precision, speed, and futuristic flair.</span>
+    <span>From conceptual ideation to production deployment, our tech-driven strategies ensure your brand stands out in a hyper-connected world, seamlessly merging creativity with innovation.</span>
+  </p>
+</section>
+
+<!-- Skills -->
+<section id="skills">
+  <h2>Our Skills</h2>
+  <div class="skill"><p>Branding & Design</p><div class="skill-bar"><div class="skill-fill" data-fill="90%"></div></div></div>
+  <div class="skill"><p>Printing & Packaging</p><div class="skill-bar"><div class="skill-fill" data-fill="85%"></div></div></div>
+  <div class="skill"><p>Web Development</p><div class="skill-bar"><div class="skill-fill" data-fill="80%"></div></div></div>
+  <div class="skill"><p>Digital Services</p><div class="skill-bar"><div class="skill-fill" data-fill="75%"></div></div></div>
+</section>
+
+<!-- Projects -->
+<section id="projects">
+  <h2>Our Projects</h2>
+  <div class="projects">
+    <div class="project-card"><img src="7E12CAF5-0B68-4F84-98C5-79EA0B0EEC31.png"><div class="overlay">Branding Project</div></div>
+    <div class="project-card"><img src="4F382788-55BD-47F7-8717-1385E2FD9CE2.png"><div class="overlay">Printing Project</div></div>
+    <div class="project-card"><img src="2nd PJ Photoshop 1.jpg"><div class="overlay">Web Dev Project</div></div>
+    <div class="project-card"><img src="4E4F90F5-C9E2-4C20-AEE8-CF0E266AD9DE.png"><div class="overlay">Packaging Project</div></div>
+  </div>
+</section>
+
+<!-- Video Projects -->
+<section id="video">
+  <h2>Video Projects</h2>
+  <div class="video-projects">
+    <div class="video-frame">
+      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+    </div>
+    <div class="video-frame">
+      <iframe src="https://player.vimeo.com/video/76979871" allowfullscreen></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- Blog -->
+<section id="blog">
+  <h2>Our Blog</h2>
+  <div style="position:relative;">
+    <button class="slider-btn left-btn" onclick="slideLeft('blog-container')">&#10094;</button>
+    <div id="blog-container" class="slider-container">
+      <div class="slider-card"><h3>Blog Post 1</h3><p>Creative TMB launched new design services for 2025...</p></div>
+      <div class="slider-card"><h3>Blog Post 2</h3><p>How we deliver premium printing solutions efficiently...</p></div>
+      <div class="slider-card"><h3>Blog Post 3</h3><p>Top web development trends to watch this year...</p></div>
+    </div>
+    <button class="slider-btn right-btn" onclick="slideRight('blog-container')">&#10095;</button>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section id="testimonials">
+  <h2>Testimonials</h2>
+  <div style="position:relative;">
+    <button class="slider-btn left-btn" onclick="slideLeft('testimonial-container')">&#10094;</button>
+    <div id="testimonial-container" class="slider-container">
+      <div class="slider-card"><p>"Creative TMB delivered our branding faster than expected!"</p><strong>- Client A</strong></div>
+      <div class="slider-card"><p>"Amazing printing quality and customer support!"</p><strong>- Client B</strong></div>
+      <div class="slider-card"><p>"Our website looks incredible, very professional team."</p><strong>- Client C</strong></div>
+    </div>
+    <button class="slider-btn right-btn" onclick="slideRight('testimonial-container')">&#10095;</button>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <h2>Contact Us</h2>
+  <form>
+    <input type="text" placeholder="Your Name" required>
+    <input type="email" placeholder="Your Email" required>
+    <textarea rows="5" placeholder="Your Message" required></textarea>
+    <button type="submit">Send Message</button>
+  </form>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>&copy; 2025 Creative TMB Concepts. All rights reserved.</p>
+  <p>Contact: <a href="mailto:creativetmbconcepts@gmail.com">creativetmbconcepts@gmail.com</a> | Phone: 08033539667</p>
+  <p>
+    <a href="https://instagram.com/creativetmbconcepts" class="social-icon"><img src="ig.png"></a>
+    <a href="https://facebook.com/creativetmbconcepts" class="social-icon"><img src="fb.png"></a>
+    <a href="https://tiktok.com/@digitaltmbconcepts" class="social-icon"><img src="tiktok.png"></a>
+  </p>
+</footer>
+
+<script>
+// Hamburger
+document.querySelector(".hamburger").addEventListener("click",()=>{document.querySelector(".nav-menu").classList.toggle("active");});
+
+// Skills fill
+const fills=document.querySelectorAll(".skill-fill");
+window.addEventListener("scroll",()=>{fills.forEach(f=>{let r=f.getBoundingClientRect();if(r.top<window.innerHeight)f.style.width=f.dataset.fill;});});
+
+// Section reveal
+const sections=document.querySelectorAll("section");
+window.addEventListener("scroll",()=>{sections.forEach(s=>{let r=s.getBoundingClientRect();if(r.top<window.innerHeight-100)s.classList.add("show");});});
+
+// Scroll progress
+window.addEventListener("scroll",()=>{let sc=document.documentElement.scrollTop;let h=document.documentElement.scrollHeight-document.documentElement.clientHeight;document.getElementById("progress-bar").style.width=(sc/h*100)+"%";});
+
+// Slider
+function slideLeft(id){document.getElementById(id).scrollBy({left:-300,behavior:"smooth"});}
+function slideRight(id){document.getElementById(id).scrollBy({left:300,behavior:"smooth"});}
+setInterval(()=>{['blog-container','testimonial-container'].forEach(id=>{const c=document.getElementById(id);if(c)c.scrollBy({left:300,behavior:"smooth"});});},5000);
+
+// Particle Background
+const canvas=document.getElementById("bgCanvas"),ctx=canvas.getContext("2d");let w=canvas.width=window.innerWidth,h=canvas.height=window.innerHeight;
+let particles=Array.from({length:80},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-0.5)*1.2,vy:(Math.random()-0.5)*1.2}));
+function animate(){ctx.clearRect(0,0,w,h);particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(p.x,p.y,2,0,Math.PI*2);ctx.fill();});
+for(let i=0;i<particles.length;i++){for(let j=i+1;j<particles.length;j++){let dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<150){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(51,153,255,${1-d/150})`;ctx.stroke();}}}
+requestAnimationFrame(animate);}
+animate();
+window.addEventListener("resize",()=>{w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight;});
+
+// CEO Slideshow
+let currentSlide = 0;
+const slides = document.querySelectorAll(".ceo-slide");
+function showSlide(index) {
+  slides.forEach((s,i)=>s.classList.toggle("active", i === index));
+}
+setInterval(()=>{
+  currentSlide = (currentSlide + 1) % slides.length;
+  showSlide(currentSlide);
+}, 4000); // every 4s
+</script>
+</body>
+</html>
